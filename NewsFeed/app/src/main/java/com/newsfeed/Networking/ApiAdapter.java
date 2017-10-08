@@ -25,7 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiAdapter {
 
-    public static ApiClient sApiClinet;
+    private static ApiClient sApiClinet;
 
     public static ApiClient getApiClient () {
         if (sApiClinet == null) {
