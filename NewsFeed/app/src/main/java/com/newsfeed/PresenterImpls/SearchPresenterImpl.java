@@ -24,6 +24,10 @@ public class SearchPresenterImpl implements SearchPresenter {
     private String searchText;
     private int currentPage;
 
+    public SearchPresenterImpl(SearchView searchView) {
+        this.searchView = searchView;
+    }
+
     @Override
     public void getNewsForQuery(String query) {
         searchText = query;
@@ -33,6 +37,7 @@ public class SearchPresenterImpl implements SearchPresenter {
                 .subscribe(new DisposableObserver<NewsFeed>() {
                     @Override
                     public void onNext(@NonNull NewsFeed newsFeed) {
+                        currentPage = 0;
                         searchView.onNewsReceived(newsFeed);
                     }
 
@@ -58,10 +63,13 @@ public class SearchPresenterImpl implements SearchPresenter {
                     @Override
                     public void onNext(@NonNull NewsFeed newsFeed) {
                         currentPage += 1;
-                        if (newsFeed.getPage() == newsFeed.getTotalPages()) {
+                        Log.d(TAG, "total page : " + newsFeed.getTotalPages());
+                        Log.d(TAG, "page : " + newsFeed.getPage());
+
+                        if (newsFeed.getPage().equals(newsFeed.getTotalPages())) {
                             searchView.onLastPageReached();
                         }
-                        searchView.onNewsReceived(newsFeed);
+                        searchView.onMoreNews(newsFeed);
                     }
 
                     @Override

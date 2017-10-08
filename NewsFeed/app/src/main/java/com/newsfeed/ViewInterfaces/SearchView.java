@@ -8,5 +8,6 @@ import com.newsfeed.Models.NewsFeed;
 
 public interface SearchView {
     void onNewsReceived(NewsFeed newsFeed);
+    void onMoreNews(NewsFeed newsFeed);
     void onLastPageReached();
 }
