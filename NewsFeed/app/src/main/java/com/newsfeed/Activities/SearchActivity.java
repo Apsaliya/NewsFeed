@@ -1,4 +1,4 @@
-package com.newsfeed;
+package com.newsfeed.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -6,19 +6,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.widget.EditText;
 
 import com.newsfeed.Adapters.SearchAdapter;
 import com.newsfeed.Models.NewsFeed;
 import com.newsfeed.Models.NewsItem;
 import com.newsfeed.PresenterImpls.SearchPresenterImpl;
+import com.newsfeed.R;
 import com.newsfeed.ViewInterfaces.SearchView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements SearchView {
-    private final String TAG = MainActivity.class.getSimpleName();
+public class SearchActivity extends AppCompatActivity implements SearchView {
+    private final String TAG = SearchActivity.class.getSimpleName();
     private SearchPresenterImpl presenter;
     private EditText searchEditText;
     private RecyclerView recyclerView;
