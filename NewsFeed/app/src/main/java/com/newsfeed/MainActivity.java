@@ -8,14 +8,21 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
+import com.newsfeed.Adapters.SearchAdapter;
 import com.newsfeed.Models.NewsFeed;
+import com.newsfeed.Models.NewsItem;
 import com.newsfeed.PresenterImpls.SearchPresenterImpl;
 import com.newsfeed.ViewInterfaces.SearchView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements SearchView {
     private SearchPresenterImpl presenter;
     private EditText searchEditText;
     private RecyclerView recyclerView;
+    private String lastQuery;
+    private boolean isLastPageReached = false;
+    private ArrayList<NewsItem> newsItems = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,8 +45,10 @@ public class MainActivity extends AppCompatActivity implements SearchView {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence != null) {
                     initSearch(charSequence.toString());
+                    lastQuery = charSequence.toString();
                 } else {
                     initSearch("");
+                    lastQuery = "";
                 }
             }
 
@@ -59,8 +68,15 @@ public class MainActivity extends AppCompatActivity implements SearchView {
                 int lastVisibleItemPosition = linearLayoutManager.findLastCompletelyVisibleItemPosition();
 
                 if (lastVisibleItemPosition >= visibleItemCount) {
-                    // not last page, same query
-                }
+                    String currentText = "";
+                    Editable editable = searchEditText.getText();
+                    if (editable != null) {
+                        currentText = editable.toString();
+                    }
+                    if (!isLastPageReached && currentText.equalsIgnoreCase(lastQuery)) {
+                        presenter.fetchMoreNews();
+                    }
+            }
             }
 
             @Override
@@ -80,11 +96,18 @@ public class MainActivity extends AppCompatActivity implements SearchView {
 
     @Override
     public void onNewsReceived(NewsFeed newsFeed) {
-
+        newsItems.addAll(newsFeed.getNewsItems());
+        RecyclerView.Adapter adapter = recyclerView.getAdapter();
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        } else {
+            SearchAdapter searchAdapter = new SearchAdapter(newsItems);
+            recyclerView.setAdapter(searchAdapter);
+        }
     }
 
     @Override
     public void onLastPageReached() {
-
+        isLastPageReached = true;
     }
 }

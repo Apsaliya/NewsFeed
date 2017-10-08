@@ -21,9 +21,12 @@ public class SearchPresenterImpl implements SearchPresenter {
     private SearchView searchView;
     private final String TAG = SearchPresenterImpl.class.getSimpleName();
     private SearchRepository searchRepository = new SearchRepository();
+    private String searchText;
+    private int currentPage;
 
     @Override
     public void getNewsForQuery(String query) {
+        searchText = query;
         Observable<NewsFeed> newsFeedObservable = searchRepository.getNewsForQuery(query, 0);
         newsFeedObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -48,6 +51,29 @@ public class SearchPresenterImpl implements SearchPresenter {
 
     @Override
     public void fetchMoreNews() {
+        Observable<NewsFeed> newsFeedObservable = searchRepository.getNewsForQuery(searchText,  currentPage + 1);
+        newsFeedObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DisposableObserver<NewsFeed>() {
+                    @Override
+                    public void onNext(@NonNull NewsFeed newsFeed) {
+                        currentPage += 1;
+                        if (newsFeed.getPage() == newsFeed.getTotalPages()) {
+                            searchView.onLastPageReached();
+                        }
+                        searchView.onNewsReceived(newsFeed);
+                    }
 
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        Log.d(TAG, "error fetching searchResults");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "news fetched successfully");
+                    }
+                });
     }
 }
