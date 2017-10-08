@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements SearchView {
                 int lastVisibleItemPosition = linearLayoutManager.findLastCompletelyVisibleItemPosition();
 
                 if (lastVisibleItemPosition >= visibleItemCount) {
-                    
+                    // not last page, same query
                 }
             }
 
