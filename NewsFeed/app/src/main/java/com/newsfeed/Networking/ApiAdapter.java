@@ -1,14 +1,12 @@
 package com.newsfeed.Networking;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
-import android.util.Base64;
-import android.util.Pair;
 
 import com.newsfeed.Utils.Constants;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -35,7 +33,11 @@ public class ApiAdapter {
     }
 
     private static void initApiClient() {
-        final String serverUrl = Constants.NetworkConstants.BASE_URL;
+        final String serverUrl = getServerBaseUrl();
+
+        if (TextUtils.isEmpty(serverUrl)) {
+            throw new IllegalStateException("serverUrl cannot be null to init Api client");
+        }
 
         // for loggin we use our own interceptor
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
@@ -63,5 +65,16 @@ public class ApiAdapter {
         retrofitBuilder.addCallAdapterFactory(RxJava2CallAdapterFactory.create());
         retrofitBuilder.addConverterFactory(GsonConverterFactory.create());
         sApiClinet = retrofitBuilder.build().create(ApiClient.class);
+    }
+
+    public static String getServerBaseUrl() {
+        String serverUrl = null;
+        String backEnd = Constants.BACKEND;
+        if (backEnd.equalsIgnoreCase(Constants.NetworkConstants.PROD)) {
+            serverUrl = Constants.NetworkConstants.BASE_URL_PROD;
+        } else if (backEnd.equalsIgnoreCase(Constants.NetworkConstants.TEST)) {
+            serverUrl = Constants.NetworkConstants.BASE_URL_TEST;
+        }
+        return serverUrl;
     }
 }

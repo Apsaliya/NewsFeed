@@ -20,17 +20,19 @@ import io.reactivex.schedulers.Schedulers;
 public class SearchPresenterImpl implements SearchPresenter {
     private SearchView searchView;
     private final String TAG = SearchPresenterImpl.class.getSimpleName();
-    private SearchRepository searchRepository = new SearchRepository();
+    private SearchRepository searchRepository;
     private String searchText;
     private int currentPage;
 
-    public SearchPresenterImpl(SearchView searchView) {
+    public SearchPresenterImpl(SearchView searchView, SearchRepository searchRepository) {
         this.searchView = searchView;
+        this.searchRepository = searchRepository;
     }
 
     @Override
     public void getNewsForQuery(String query) {
         searchText = query;
+        Log.d(TAG, "query : " + query);
         Observable<NewsFeed> newsFeedObservable = searchRepository.getNewsForQuery(query, 0);
         newsFeedObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -44,6 +46,8 @@ public class SearchPresenterImpl implements SearchPresenter {
                     @Override
                     public void onError(@NonNull Throwable e) {
                         Log.d(TAG, "error fetching searchResults");
+                        // parse your error here
+                        searchView.onError(e.getMessage());
                         e.printStackTrace();
                     }
 
@@ -75,6 +79,8 @@ public class SearchPresenterImpl implements SearchPresenter {
                     @Override
                     public void onError(@NonNull Throwable e) {
                         Log.d(TAG, "error fetching searchResults");
+                        // parse your error here
+                        searchView.onError(e.getMessage());
                         e.printStackTrace();
                     }
 
@@ -84,4 +90,12 @@ public class SearchPresenterImpl implements SearchPresenter {
                     }
                 });
     }
+
+    public SearchView getView() {
+        return this.searchView;
+    }
+    public void attachView(SearchView view) {
+        this.searchView = view;
+    }
+
 }

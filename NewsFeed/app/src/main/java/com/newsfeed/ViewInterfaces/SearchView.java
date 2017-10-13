@@ -10,4 +10,5 @@ public interface SearchView {
     void onNewsReceived(NewsFeed newsFeed);
     void onMoreNews(NewsFeed newsFeed);
     void onLastPageReached();
+    void onError(String errorMsg);
 }

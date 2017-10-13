@@ -13,6 +13,7 @@ import com.newsfeed.Models.NewsFeed;
 import com.newsfeed.Models.NewsItem;
 import com.newsfeed.PresenterImpls.SearchPresenterImpl;
 import com.newsfeed.R;
+import com.newsfeed.Repos.SearchRepository;
 import com.newsfeed.ViewInterfaces.SearchView;
 
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView {
     }
 
     private void initPresenter() {
-        presenter = new SearchPresenterImpl(this);
+        presenter = new SearchPresenterImpl(this, new SearchRepository());
     }
 
     private void initSearch(String searchText) {
@@ -97,5 +98,10 @@ public class SearchActivity extends AppCompatActivity implements SearchView {
     @Override
     public void onLastPageReached() {
         isLastPageReached = true;
+    }
+
+    @Override
+    public void onError(String errorMsg) {
+        //update your error view
     }
 }
