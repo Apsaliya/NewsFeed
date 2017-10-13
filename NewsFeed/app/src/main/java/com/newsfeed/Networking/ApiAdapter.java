@@ -3,7 +3,10 @@ package com.newsfeed.Networking;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.newsfeed.BuildConfig;
+import com.newsfeed.R;
 import com.newsfeed.Utils.Constants;
 
 import java.io.IOException;
@@ -25,16 +28,17 @@ public class ApiAdapter {
 
     private static ApiClient sApiClinet;
 
-    public static ApiClient getApiClient () {
+    public static ApiClient getApiClient (Context context) {
         if (sApiClinet == null) {
-            initApiClient();
+            initApiClient(context);
         }
         return sApiClinet;
     }
 
-    private static void initApiClient() {
-        final String serverUrl = getServerBaseUrl();
+    private static void initApiClient(Context context) {
+        final String serverUrl = context.getString(R.string.base_url);
 
+        Log.d("base url : " , serverUrl);
         if (TextUtils.isEmpty(serverUrl)) {
             throw new IllegalStateException("serverUrl cannot be null to init Api client");
         }

@@ -61,7 +61,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView {
     }
 
     private void initPresenter() {
-        presenter = new SearchPresenterImpl(this, new SearchRepository());
+        presenter = new SearchPresenterImpl(this, new SearchRepository(getBaseContext()));
     }
 
     private void initSearch(String searchText) {

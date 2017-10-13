@@ -11,6 +11,22 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+
+    productFlavors {
+
+        production {
+            applicationId "com.newsfeed.app.production"
+        }
+
+        development {
+            applicationId "com.newsfeed.app.development"
+        }
+
+    }
+
+
+
     buildTypes {
         release {
             minifyEnabled false
